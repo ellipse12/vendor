@@ -1,0 +1,418 @@
+module vulkan::vk::video_codec::h264std;
+import vulkan::vk;
+
+const STD_VIDEO_H264_CPB_CNT_LIST_SIZE  = 32;
+const STD_VIDEO_H264_SCALING_LIST_4X4_NUM_LISTS = 6;
+const STD_VIDEO_H264_SCALING_LIST_4X4_NUM_ELEMENTS = 16;
+const STD_VIDEO_H264_SCALING_LIST_8X8_NUM_LISTS = 6;
+const STD_VIDEO_H264_SCALING_LIST_8X8_NUM_ELEMENTS = 64;
+const STD_VIDEO_H264_MAX_NUM_LIST_REF   = 32;
+const STD_VIDEO_H264_MAX_CHROMA_PLANES  = 2;
+const STD_VIDEO_H264_NO_REFERENCE_PICTURE = 0xFF;
+
+distinct StdVideoH264ChromaFormatIdc = int;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_MONOCHROME = 0;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_420 = 1;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_422 = 2;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_444 = 3;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264ChromaFormatIdc STD_VIDEO_H264_CHROMA_FORMAT_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264ProfileIdc = int;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_BASELINE = 66;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_MAIN = 77;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_HIGH = 100;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_HIGH_444_PREDICTIVE = 244;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264ProfileIdc STD_VIDEO_H264_PROFILE_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264LevelIdc = int;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_1_0 = 0;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_1_1 = 1;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_1_2 = 2;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_1_3 = 3;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_2_0 = 4;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_2_1 = 5;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_2_2 = 6;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_3_0 = 7;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_3_1 = 8;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_3_2 = 9;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_4_0 = 10;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_4_1 = 11;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_4_2 = 12;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_5_0 = 13;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_5_1 = 14;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_5_2 = 15;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_6_0 = 16;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_6_1 = 17;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_6_2 = 18;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264LevelIdc STD_VIDEO_H264_LEVEL_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264PocType = int;
+const StdVideoH264PocType STD_VIDEO_H264_POC_TYPE_0 = 0;
+const StdVideoH264PocType STD_VIDEO_H264_POC_TYPE_1 = 1;
+const StdVideoH264PocType STD_VIDEO_H264_POC_TYPE_2 = 2;
+const StdVideoH264PocType STD_VIDEO_H264_POC_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoH264PocType STD_VIDEO_H264_POC_TYPE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264AspectRatioIdc = int;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_UNSPECIFIED = 0;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_SQUARE = 1;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_12_11 = 2;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_10_11 = 3;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_16_11 = 4;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_40_33 = 5;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_24_11 = 6;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_20_11 = 7;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_32_11 = 8;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_80_33 = 9;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_18_11 = 10;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_15_11 = 11;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_64_33 = 12;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_160_99 = 13;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_4_3 = 14;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_3_2 = 15;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_2_1 = 16;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_EXTENDED_SAR = 255;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264AspectRatioIdc STD_VIDEO_H264_ASPECT_RATIO_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264WeightedBipredIdc = int;
+const StdVideoH264WeightedBipredIdc STD_VIDEO_H264_WEIGHTED_BIPRED_IDC_DEFAULT = 0;
+const StdVideoH264WeightedBipredIdc STD_VIDEO_H264_WEIGHTED_BIPRED_IDC_EXPLICIT = 1;
+const StdVideoH264WeightedBipredIdc STD_VIDEO_H264_WEIGHTED_BIPRED_IDC_IMPLICIT = 2;
+const StdVideoH264WeightedBipredIdc STD_VIDEO_H264_WEIGHTED_BIPRED_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264WeightedBipredIdc STD_VIDEO_H264_WEIGHTED_BIPRED_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264ModificationOfPicNumsIdc = int;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_SHORT_TERM_SUBTRACT = 0;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_SHORT_TERM_ADD = 1;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_LONG_TERM = 2;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_END = 3;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264ModificationOfPicNumsIdc STD_VIDEO_H264_MODIFICATION_OF_PIC_NUMS_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264MemMgmtControlOp = int;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_END = 0;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_UNMARK_SHORT_TERM = 1;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_UNMARK_LONG_TERM = 2;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_MARK_LONG_TERM = 3;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_SET_MAX_LONG_TERM_INDEX = 4;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_UNMARK_ALL = 5;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_MARK_CURRENT_AS_LONG_TERM = 6;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_INVALID = 0x7FFFFFFF;
+const StdVideoH264MemMgmtControlOp STD_VIDEO_H264_MEM_MGMT_CONTROL_OP_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264CabacInitIdc = int;
+const StdVideoH264CabacInitIdc STD_VIDEO_H264_CABAC_INIT_IDC_0 = 0;
+const StdVideoH264CabacInitIdc STD_VIDEO_H264_CABAC_INIT_IDC_1 = 1;
+const StdVideoH264CabacInitIdc STD_VIDEO_H264_CABAC_INIT_IDC_2 = 2;
+const StdVideoH264CabacInitIdc STD_VIDEO_H264_CABAC_INIT_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264CabacInitIdc STD_VIDEO_H264_CABAC_INIT_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264DisableDeblockingFilterIdc = int;
+const StdVideoH264DisableDeblockingFilterIdc STD_VIDEO_H264_DISABLE_DEBLOCKING_FILTER_IDC_DISABLED = 0;
+const StdVideoH264DisableDeblockingFilterIdc STD_VIDEO_H264_DISABLE_DEBLOCKING_FILTER_IDC_ENABLED = 1;
+const StdVideoH264DisableDeblockingFilterIdc STD_VIDEO_H264_DISABLE_DEBLOCKING_FILTER_IDC_PARTIAL = 2;
+const StdVideoH264DisableDeblockingFilterIdc STD_VIDEO_H264_DISABLE_DEBLOCKING_FILTER_IDC_INVALID = 0x7FFFFFFF;
+const StdVideoH264DisableDeblockingFilterIdc STD_VIDEO_H264_DISABLE_DEBLOCKING_FILTER_IDC_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264SliceType = int;
+const StdVideoH264SliceType STD_VIDEO_H264_SLICE_TYPE_P = 0;
+const StdVideoH264SliceType STD_VIDEO_H264_SLICE_TYPE_B = 1;
+const StdVideoH264SliceType STD_VIDEO_H264_SLICE_TYPE_I = 2;
+const StdVideoH264SliceType STD_VIDEO_H264_SLICE_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoH264SliceType STD_VIDEO_H264_SLICE_TYPE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264PictureType = int;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_P = 0;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_B = 1;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_I = 2;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_IDR = 5;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoH264PictureType STD_VIDEO_H264_PICTURE_TYPE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoH264NonVclNaluType = int;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_SPS = 0;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_PPS = 1;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_AUD = 2;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_PREFIX = 3;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_END_OF_SEQUENCE = 4;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_END_OF_STREAM = 5;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_PRECODED = 6;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoH264NonVclNaluType STD_VIDEO_H264_NON_VCL_NALU_TYPE_MAX_ENUM = 0x7FFFFFFF;
+bitstruct StdVideoH264SpsVuiFlags : ushort
+{
+    uint    aspect_ratio_info_present_flag  : 0..1;
+    uint    overscan_info_present_flag  : 1..2;
+    uint    overscan_appropriate_flag  : 2..3;
+    uint    video_signal_type_present_flag  : 3..4;
+    uint    video_full_range_flag  : 4..5;
+    uint    color_description_present_flag  : 5..6;
+    uint    chroma_loc_info_present_flag  : 6..7;
+    uint    timing_info_present_flag  : 7..8;
+    uint    fixed_frame_rate_flag  : 8..9;
+    uint    bitstream_restriction_flag  : 9..10;
+    uint    nal_hrd_parameters_present_flag  : 10..11;
+    uint    vcl_hrd_parameters_present_flag  : 11..12;
+}
+struct StdVideoH264HrdParameters
+{
+    char     cpb_cnt_minus1;
+    char     bit_rate_scale;
+    char     cpb_size_scale;
+    char     reserved1;
+    uint[STD_VIDEO_H264_CPB_CNT_LIST_SIZE] bit_rate_value_minus1;
+    uint[STD_VIDEO_H264_CPB_CNT_LIST_SIZE] cpb_size_value_minus1;
+    char[STD_VIDEO_H264_CPB_CNT_LIST_SIZE] cbr_flag;
+    uint    initial_cpb_removal_delay_length_minus1;
+    uint    cpb_removal_delay_length_minus1;
+    uint    dpb_output_delay_length_minus1;
+    uint    time_offset_length;
+}
+struct StdVideoH264SequenceParameterSetVui
+{
+    StdVideoH264SpsVuiFlags             flags;
+    StdVideoH264AspectRatioIdc          aspect_ratio_idc;
+    ushort                            sar_width;
+    ushort                            sar_height;
+    char                             video_format;
+    char                             colour_primaries;
+    char                             transfer_characteristics;
+    char                             matrix_coefficients;
+    uint                            num_units_in_tick;
+    uint                            time_scale;
+    char                             max_num_reorder_frames;
+    char                             max_dec_frame_buffering;
+    char                             chroma_sample_loc_type_top_field;
+    char                             chroma_sample_loc_type_bottom_field;
+    uint                            reserved1;
+    StdVideoH264HrdParameters*    pHrdParameters;
+}
+bitstruct StdVideoH264SpsFlags : ushort
+{
+    uint    constraint_set0_flag  : 0..1;
+    uint    constraint_set1_flag  : 1..2;
+    uint    constraint_set2_flag  : 2..3;
+    uint    constraint_set3_flag  : 3..4;
+    uint    constraint_set4_flag  : 4..5;
+    uint    constraint_set5_flag  : 5..6;
+    uint    direct_8X8_inference_flag  : 6..7;
+    uint    mb_adaptive_frame_field_flag  : 7..8;
+    uint    frame_mbs_only_flag  : 8..9;
+    uint    delta_pic_order_always_zero_flag  : 9..10;
+    uint    separate_colour_plane_flag  : 10..11;
+    uint    gaps_in_frame_num_value_allowed_flag  : 11..12;
+    uint    qpprime_y_zero_transform_bypass_flag  : 12..13;
+    uint    frame_cropping_flag  : 13..14;
+    uint    seq_scaling_matrix_present_flag  : 14..15;
+    uint    vui_parameters_present_flag  : 15..16;
+}
+struct StdVideoH264ScalingLists
+{
+    ushort    scaling_list_present_mask;
+    ushort    use_default_scaling_matrix_mask;
+    char[STD_VIDEO_H264_SCALING_LIST_4X4_NUM_LISTS][STD_VIDEO_H264_SCALING_LIST_4X4_NUM_ELEMENTS] ScalingList4X4;
+    char[STD_VIDEO_H264_SCALING_LIST_8X8_NUM_LISTS][STD_VIDEO_H264_SCALING_LIST_8X8_NUM_ELEMENTS] ScalingList8X8;
+}
+struct StdVideoH264SequenceParameterSet
+{
+    StdVideoH264SpsFlags                          flags;
+    StdVideoH264ProfileIdc                        profile_idc;
+    StdVideoH264LevelIdc                          level_idc;
+    StdVideoH264ChromaFormatIdc                   chroma_format_idc;
+    char                                       seq_parameter_set_id;
+    char                                       bit_depth_luma_minus8;
+    char                                       bit_depth_chroma_minus8;
+    char                                       log2_max_frame_num_minus4;
+    StdVideoH264PocType                           pic_order_cnt_type;
+    int                                       offset_for_non_ref_pic;
+    int                                       offset_for_top_to_bottom_field;
+    char                                       log2_max_pic_order_cnt_lsb_minus4;
+    char                                       num_ref_frames_in_pic_order_cnt_cycle;
+    char                                       max_num_ref_frames;
+    char                                       reserved1;
+    uint                                      pic_width_in_mbs_minus1;
+    uint                                      pic_height_in_map_units_minus1;
+    uint                                      frame_crop_left_offset;
+    uint                                      frame_crop_right_offset;
+    uint                                      frame_crop_top_offset;
+    uint                                      frame_crop_bottom_offset;
+    uint                                      reserved2;
+    int*                                pOffsetForRefFrame;
+    StdVideoH264ScalingLists*               pScalingLists;
+    StdVideoH264SequenceParameterSetVui*    pSequenceParameterSetVui;
+}
+bitstruct StdVideoH264PpsFlags : char
+{
+    uint    transform_8X8_mode_flag  : 0..1;
+    uint    redundant_pic_cnt_present_flag  : 1..2;
+    uint    constrained_intra_pred_flag  : 2..3;
+    uint    deblocking_filter_control_present_flag  : 3..4;
+    uint    weighted_pred_flag  : 4..5;
+    uint    bottom_field_pic_order_in_frame_present_flag  : 5..6;
+    uint    entropy_coding_mode_flag  : 6..7;
+    uint    pic_scaling_matrix_present_flag  : 7..8;
+}
+struct StdVideoH264PictureParameterSet
+{
+    StdVideoH264PpsFlags               flags;
+    char                            seq_parameter_set_id;
+    char                            pic_parameter_set_id;
+    char                            num_ref_idx_l0_default_active_minus1;
+    char                            num_ref_idx_l1_default_active_minus1;
+    StdVideoH264WeightedBipredIdc      weighted_bipred_idc;
+    ichar                             pic_init_qp_minus26;
+    ichar                             pic_init_qs_minus26;
+    ichar                             chroma_qp_index_offset;
+    ichar                             second_chroma_qp_index_offset;
+    StdVideoH264ScalingLists*    pScalingLists;
+}
+struct StdVideoEncodeH264WeightTableFlags
+{
+    uint    luma_weight_l0_flag;
+    uint    chroma_weight_l0_flag;
+    uint    luma_weight_l1_flag;
+    uint    chroma_weight_l1_flag;
+}
+struct StdVideoEncodeH264WeightTable
+{
+    StdVideoEncodeH264WeightTableFlags    flags;
+    char                               luma_log2_weight_denom;
+    char                               chroma_log2_weight_denom;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF] luma_weight_l0;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF] luma_offset_l0;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF][STD_VIDEO_H264_MAX_CHROMA_PLANES] chroma_weight_l0;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF][STD_VIDEO_H264_MAX_CHROMA_PLANES] chroma_offset_l0;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF] luma_weight_l1;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF] luma_offset_l1;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF][STD_VIDEO_H264_MAX_CHROMA_PLANES] chroma_weight_l1;
+    ichar[STD_VIDEO_H264_MAX_NUM_LIST_REF][STD_VIDEO_H264_MAX_CHROMA_PLANES] chroma_offset_l1;
+}
+bitstruct StdVideoEncodeH264SliceHeaderFlags : uint
+{
+    uint    direct_spatial_mv_pred_flag  : 0..1;
+    uint    num_ref_idx_active_override_flag  : 1..2;
+    uint    reserved  : 2..32;
+}
+bitstruct StdVideoEncodeH264PictureInfoFlags : uint
+{
+    uint    IdrPicFlag  : 0..1;
+    uint    is_reference  : 1..2;
+    uint    no_output_of_prior_pics_flag  : 2..3;
+    uint    long_term_reference_flag  : 3..4;
+    uint    adaptive_ref_pic_marking_mode_flag  : 4..5;
+    uint    reserved  : 5..32;
+}
+bitstruct StdVideoEncodeH264ReferenceInfoFlags : uint
+{
+    uint    used_for_long_term_reference  : 0..1;
+    uint    reserved  : 1..32;
+}
+bitstruct StdVideoEncodeH264ReferenceListsInfoFlags : uint
+{
+    uint    ref_pic_list_modification_flag_l0  : 0..1;
+    uint    ref_pic_list_modification_flag_l1  : 1..2;
+    uint    reserved  : 2..32;
+}
+struct StdVideoEncodeH264RefListModEntry
+{
+    StdVideoH264ModificationOfPicNumsIdc    modification_of_pic_nums_idc;
+    ushort                                abs_diff_pic_num_minus1;
+    ushort                                long_term_pic_num;
+}
+struct StdVideoEncodeH264RefPicMarkingEntry
+{
+    StdVideoH264MemMgmtControlOp    memory_management_control_operation;
+    ushort                        difference_of_pic_nums_minus1;
+    ushort                        long_term_pic_num;
+    ushort                        long_term_frame_idx;
+    ushort                        max_long_term_frame_idx_plus1;
+}
+struct StdVideoEncodeH264ReferenceListsInfo
+{
+    StdVideoEncodeH264ReferenceListsInfoFlags      flags;
+    char                                        num_ref_idx_l0_active_minus1;
+    char                                        num_ref_idx_l1_active_minus1;
+    char[STD_VIDEO_H264_MAX_NUM_LIST_REF] RefPicList0;
+    char[STD_VIDEO_H264_MAX_NUM_LIST_REF] RefPicList1;
+    char                                        refList0ModOpCount;
+    char                                        refList1ModOpCount;
+    char                                        refPicMarkingOpCount;
+    char[7] reserved1;
+    StdVideoEncodeH264RefListModEntry*       pRefList0ModOperations;
+    StdVideoEncodeH264RefListModEntry*       pRefList1ModOperations;
+    StdVideoEncodeH264RefPicMarkingEntry*    pRefPicMarkingOperations;
+}
+struct StdVideoEncodeH264PictureInfo
+{
+    StdVideoEncodeH264PictureInfoFlags             flags;
+    char                                        seq_parameter_set_id;
+    char                                        pic_parameter_set_id;
+    ushort                                       idr_pic_id;
+    StdVideoH264PictureType                        primary_pic_type;
+    uint                                       frame_num;
+    int                                        PicOrderCnt;
+    char                                        temporal_id;
+    char[3] reserved1;
+    StdVideoEncodeH264ReferenceListsInfo*    pRefLists;
+}
+struct StdVideoEncodeH264ReferenceInfo
+{
+    StdVideoEncodeH264ReferenceInfoFlags    flags;
+    StdVideoH264PictureType                 primary_pic_type;
+    uint                                FrameNum;
+    int                                 PicOrderCnt;
+    ushort                                long_term_pic_num;
+    ushort                                long_term_frame_idx;
+    char                                 temporal_id;
+}
+struct StdVideoEncodeH264SliceHeader
+{
+    StdVideoEncodeH264SliceHeaderFlags        flags;
+    uint                                  first_mb_in_slice;
+    StdVideoH264SliceType                     slice_type;
+    ichar                                    slice_alpha_c0_offset_div2;
+    ichar                                    slice_beta_offset_div2;
+    ichar                                    slice_qp_delta;
+    char                                   reserved1;
+    StdVideoH264CabacInitIdc                  cabac_init_idc;
+    StdVideoH264DisableDeblockingFilterIdc    disable_deblocking_filter_idc;
+    StdVideoEncodeH264WeightTable*      pWeightTable;
+}
+bitstruct StdVideoDecodeH264PictureInfoFlags : char
+{
+    uint    field_pic_flag  : 0..1;
+    uint    is_intra  : 1..2;
+    uint    IdrPicFlag  : 2..3;
+    uint    bottom_field_flag  : 3..4;
+    uint    is_reference  : 4..5;
+    uint    complementary_field_pair  : 5..6;
+}
+struct StdVideoDecodeH264PictureInfo
+{
+    StdVideoDecodeH264PictureInfoFlags    flags;
+    char                               seq_parameter_set_id;
+    char                               pic_parameter_set_id;
+    char                               reserved1;
+    char                               reserved2;
+    ushort                              frame_num;
+    ushort                              idr_pic_id;
+    int[STD_VIDEO_DECODE_H264_FIELD_ORDER_COUNT_LIST_SIZE] PicOrderCnt;
+}
+bitstruct StdVideoDecodeH264ReferenceInfoFlags : char
+{
+    uint    top_field_flag  : 0..1;
+    uint    bottom_field_flag  : 1..2;
+    uint    used_for_long_term_reference  : 2..3;
+    uint    is_non_existing  : 3..4;
+}
+struct StdVideoDecodeH264ReferenceInfo
+{
+    StdVideoDecodeH264ReferenceInfoFlags    flags;
+    ushort                                FrameNum;
+    ushort                                reserved;
+    int[STD_VIDEO_DECODE_H264_FIELD_ORDER_COUNT_LIST_SIZE] PicOrderCnt;
+}

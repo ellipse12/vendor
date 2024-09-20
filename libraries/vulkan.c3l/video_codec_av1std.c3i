@@ -1,0 +1,427 @@
+module vulkan::vk::video_codec::av1std;
+import vulkan::vk;
+const STD_VIDEO_AV1_NUM_REF_FRAMES      = 8;
+const STD_VIDEO_AV1_REFS_PER_FRAME      = 7;
+const STD_VIDEO_AV1_TOTAL_REFS_PER_FRAME = 8;
+const STD_VIDEO_AV1_MAX_TILE_COLS       = 64;
+const STD_VIDEO_AV1_MAX_TILE_ROWS       = 64;
+const STD_VIDEO_AV1_MAX_SEGMENTS        = 8;
+const STD_VIDEO_AV1_SEG_LVL_MAX         = 8;
+const STD_VIDEO_AV1_PRIMARY_REF_NONE    = 7;
+const STD_VIDEO_AV1_SELECT_INTEGER_MV   = 2;
+const STD_VIDEO_AV1_SELECT_SCREEN_CONTENT_TOOLS = 2;
+const STD_VIDEO_AV1_SKIP_MODE_FRAMES    = 2;
+const STD_VIDEO_AV1_MAX_LOOP_FILTER_STRENGTHS = 4;
+const STD_VIDEO_AV1_LOOP_FILTER_ADJUSTMENTS = 2;
+const STD_VIDEO_AV1_MAX_CDEF_FILTER_STRENGTHS = 8;
+const STD_VIDEO_AV1_MAX_NUM_PLANES      = 3;
+const STD_VIDEO_AV1_GLOBAL_MOTION_PARAMS = 6;
+const STD_VIDEO_AV1_MAX_NUM_Y_POINTS    = 14;
+const STD_VIDEO_AV1_MAX_NUM_CB_POINTS   = 10;
+const STD_VIDEO_AV1_MAX_NUM_CR_POINTS   = 10;
+const STD_VIDEO_AV1_MAX_NUM_POS_LUMA    = 24;
+const STD_VIDEO_AV1_MAX_NUM_POS_CHROMA  = 25;
+
+distinct StdVideoAV1Profile = int;
+const StdVideoAV1Profile STD_VIDEO_AV1_PROFILE_MAIN = 0;
+const StdVideoAV1Profile STD_VIDEO_AV1_PROFILE_HIGH = 1;
+const StdVideoAV1Profile STD_VIDEO_AV1_PROFILE_PROFESSIONAL = 2;
+const StdVideoAV1Profile STD_VIDEO_AV1_PROFILE_INVALID = 0x7FFFFFFF;
+const StdVideoAV1Profile STD_VIDEO_AV1_PROFILE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1Level = int;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_2_0 = 0;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_2_1 = 1;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_2_2 = 2;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_2_3 = 3;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_3_0 = 4;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_3_1 = 5;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_3_2 = 6;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_3_3 = 7;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_4_0 = 8;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_4_1 = 9;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_4_2 = 10;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_4_3 = 11;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_5_0 = 12;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_5_1 = 13;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_5_2 = 14;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_5_3 = 15;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_6_0 = 16;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_6_1 = 17;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_6_2 = 18;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_6_3 = 19;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_7_0 = 20;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_7_1 = 21;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_7_2 = 22;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_7_3 = 23;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_INVALID = 0x7FFFFFFF;
+const StdVideoAV1Level STD_VIDEO_AV1_LEVEL_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1FrameType = int;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_KEY = 0;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_INTER = 1;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_INTRA_ONLY = 2;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_SWITCH = 3;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoAV1FrameType STD_VIDEO_AV1_FRAME_TYPE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1ReferenceName = int;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_INTRA_FRAME = 0;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_LAST_FRAME = 1;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_LAST2_FRAME = 2;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_LAST3_FRAME = 3;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_GOLDEN_FRAME = 4;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_BWDREF_FRAME = 5;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_ALTREF2_FRAME = 6;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_ALTREF_FRAME = 7;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_INVALID = 0x7FFFFFFF;
+const StdVideoAV1ReferenceName STD_VIDEO_AV1_REFERENCE_NAME_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1InterpolationFilter = int;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_EIGHTTAP = 0;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_EIGHTTAP_SMOOTH = 1;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_EIGHTTAP_SHARP = 2;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_BILINEAR = 3;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_SWITCHABLE = 4;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_INVALID = 0x7FFFFFFF;
+const StdVideoAV1InterpolationFilter STD_VIDEO_AV1_INTERPOLATION_FILTER_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1TxMode = int;
+const StdVideoAV1TxMode STD_VIDEO_AV1_TX_MODE_ONLY_4X4 = 0;
+const StdVideoAV1TxMode STD_VIDEO_AV1_TX_MODE_LARGEST = 1;
+const StdVideoAV1TxMode STD_VIDEO_AV1_TX_MODE_SELECT = 2;
+const StdVideoAV1TxMode STD_VIDEO_AV1_TX_MODE_INVALID = 0x7FFFFFFF;
+const StdVideoAV1TxMode STD_VIDEO_AV1_TX_MODE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1FrameRestorationType = int;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_NONE = 0;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_WIENER = 1;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_SGRPROJ = 2;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_SWITCHABLE = 3;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_INVALID = 0x7FFFFFFF;
+const StdVideoAV1FrameRestorationType STD_VIDEO_AV1_FRAME_RESTORATION_TYPE_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1ColorPrimaries = int;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_709 = 1;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_UNSPECIFIED = 2;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_M = 4;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_470_B_G = 5;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_601 = 6;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_240 = 7;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_GENERIC_FILM = 8;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_BT_2020 = 9;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_XYZ = 10;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_431 = 11;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_SMPTE_432 = 12;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_EBU_3213 = 22;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_INVALID = 0x7FFFFFFF;
+const StdVideoAV1ColorPrimaries STD_VIDEO_AV1_COLOR_PRIMARIES_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1TransferCharacteristics = int;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_RESERVED_0 = 0;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_709 = 1;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_UNSPECIFIED = 2;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_RESERVED_3 = 3;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_470_M = 4;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_470_B_G = 5;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_601 = 6;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_SMPTE_240 = 7;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_LINEAR = 8;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_LOG_100 = 9;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_LOG_100_SQRT10 = 10;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_IEC_61966 = 11;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_1361 = 12;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_SRGB = 13;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_2020_10_BIT = 14;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_BT_2020_12_BIT = 15;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_SMPTE_2084 = 16;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_SMPTE_428 = 17;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_HLG = 18;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_INVALID = 0x7FFFFFFF;
+const StdVideoAV1TransferCharacteristics STD_VIDEO_AV1_TRANSFER_CHARACTERISTICS_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1MatrixCoefficients = int;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_IDENTITY = 0;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_BT_709 = 1;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_UNSPECIFIED = 2;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_RESERVED_3 = 3;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_FCC = 4;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_BT_470_B_G = 5;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_BT_601 = 6;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_SMPTE_240 = 7;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_SMPTE_YCGCO = 8;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_BT_2020_NCL = 9;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_BT_2020_CL = 10;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_SMPTE_2085 = 11;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_CHROMAT_NCL = 12;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_CHROMAT_CL = 13;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_ICTCP = 14;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_INVALID = 0x7FFFFFFF;
+const StdVideoAV1MatrixCoefficients STD_VIDEO_AV1_MATRIX_COEFFICIENTS_MAX_ENUM = 0x7FFFFFFF;
+
+distinct StdVideoAV1ChromaSamplePosition = int;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_UNKNOWN = 0;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_VERTICAL = 1;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_COLOCATED = 2;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_RESERVED = 3;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_INVALID = 0x7FFFFFFF;
+const StdVideoAV1ChromaSamplePosition STD_VIDEO_AV1_CHROMA_SAMPLE_POSITION_MAX_ENUM = 0x7FFFFFFF;
+bitstruct StdVideoAV1ColorConfigFlags : uint
+{
+    uint    mono_chrome  : 0..1;
+    uint    color_range  : 1..2;
+    uint    separate_uv_delta_q  : 2..3;
+    uint    color_description_present_flag  : 3..4;
+    uint    reserved  : 4..32;
+}
+struct StdVideoAV1ColorConfig
+{
+    StdVideoAV1ColorConfigFlags           flags;
+    char                               BitDepth;
+    char                               subsampling_x;
+    char                               subsampling_y;
+    char                               reserved1;
+    StdVideoAV1ColorPrimaries             color_primaries;
+    StdVideoAV1TransferCharacteristics    transfer_characteristics;
+    StdVideoAV1MatrixCoefficients         matrix_coefficients;
+    StdVideoAV1ChromaSamplePosition       chroma_sample_position;
+}
+bitstruct StdVideoAV1TimingInfoFlags : uint
+{
+    uint    equal_picture_interval  : 0..1;
+    uint    reserved  : 1..32;
+}
+struct StdVideoAV1TimingInfo
+{
+    StdVideoAV1TimingInfoFlags    flags;
+    uint                      num_units_in_display_tick;
+    uint                      time_scale;
+    uint                      num_ticks_per_picture_minus_1;
+}
+bitstruct StdVideoAV1LoopFilterFlags : uint
+{
+    uint    loop_filter_delta_enabled  : 0..1;
+    uint    loop_filter_delta_update  : 1..2;
+    uint    reserved  : 2..32;
+}
+struct StdVideoAV1LoopFilter
+{
+    StdVideoAV1LoopFilterFlags    flags;
+    char[STD_VIDEO_AV1_MAX_LOOP_FILTER_STRENGTHS] loop_filter_level;
+    char                       loop_filter_sharpness;
+    char                       update_ref_delta;
+    ichar[STD_VIDEO_AV1_TOTAL_REFS_PER_FRAME] loop_filter_ref_deltas;
+    char                       update_mode_delta;
+    ichar[STD_VIDEO_AV1_LOOP_FILTER_ADJUSTMENTS] loop_filter_mode_deltas;
+}
+bitstruct StdVideoAV1QuantizationFlags : uint
+{
+    uint    using_qmatrix  : 0..1;
+    uint    diff_uv_delta  : 1..2;
+    uint    reserved  : 2..32;
+}
+struct StdVideoAV1Quantization
+{
+    StdVideoAV1QuantizationFlags    flags;
+    char                         base_q_idx;
+    ichar                          DeltaQYDc;
+    ichar                          DeltaQUDc;
+    ichar                          DeltaQUAc;
+    ichar                          DeltaQVDc;
+    ichar                          DeltaQVAc;
+    char                         qm_y;
+    char                         qm_u;
+    char                         qm_v;
+}
+struct StdVideoAV1Segmentation
+{
+    char[STD_VIDEO_AV1_MAX_SEGMENTS] FeatureEnabled;
+    short[STD_VIDEO_AV1_MAX_SEGMENTS][STD_VIDEO_AV1_SEG_LVL_MAX] FeatureData;
+}
+bitstruct StdVideoAV1TileInfoFlags : uint
+{
+    uint    uniform_tile_spacing_flag  : 0..1;
+    uint    reserved  : 1..32;
+}
+struct StdVideoAV1TileInfo
+{
+    StdVideoAV1TileInfoFlags    flags;
+    char                     TileCols;
+    char                     TileRows;
+    ushort                    context_update_tile_id;
+    char                     tile_size_bytes_minus_1;
+    char[7] reserved1;
+    ushort*             pMiColStarts;
+    ushort*             pMiRowStarts;
+    ushort*             pWidthInSbsMinus1;
+    ushort*             pHeightInSbsMinus1;
+}
+struct StdVideoAV1CDEF
+{
+    char    cdef_damping_minus_3;
+    char    cdef_bits;
+    char[STD_VIDEO_AV1_MAX_CDEF_FILTER_STRENGTHS] cdef_y_pri_strength;
+    char[STD_VIDEO_AV1_MAX_CDEF_FILTER_STRENGTHS] cdef_y_sec_strength;
+    char[STD_VIDEO_AV1_MAX_CDEF_FILTER_STRENGTHS] cdef_uv_pri_strength;
+    char[STD_VIDEO_AV1_MAX_CDEF_FILTER_STRENGTHS] cdef_uv_sec_strength;
+}
+struct StdVideoAV1LoopRestoration
+{
+    StdVideoAV1FrameRestorationType[STD_VIDEO_AV1_MAX_NUM_PLANES] FrameRestorationType;
+    ushort[STD_VIDEO_AV1_MAX_NUM_PLANES] LoopRestorationSize;
+}
+struct StdVideoAV1GlobalMotion
+{
+    char[STD_VIDEO_AV1_NUM_REF_FRAMES] GmType;
+    int[STD_VIDEO_AV1_NUM_REF_FRAMES][STD_VIDEO_AV1_GLOBAL_MOTION_PARAMS] gm_params;
+}
+bitstruct StdVideoAV1FilmGrainFlags : uint
+{
+    uint    chroma_scaling_from_luma  : 0..1;
+    uint    overlap_flag  : 1..2;
+    uint    clip_to_restricted_range  : 2..3;
+    uint    update_grain  : 3..4;
+    uint    reserved  : 4..32;
+}
+struct StdVideoAV1FilmGrain
+{
+    StdVideoAV1FilmGrainFlags    flags;
+    char                      grain_scaling_minus_8;
+    char                      ar_coeff_lag;
+    char                      ar_coeff_shift_minus_6;
+    char                      grain_scale_shift;
+    ushort                     grain_seed;
+    char                      film_grain_params_ref_idx;
+    char                      num_y_points;
+    char[STD_VIDEO_AV1_MAX_NUM_Y_POINTS] point_y_value;
+    char[STD_VIDEO_AV1_MAX_NUM_Y_POINTS] point_y_scaling;
+    char                      num_cb_points;
+    char[STD_VIDEO_AV1_MAX_NUM_CB_POINTS] point_cb_value;
+    char[STD_VIDEO_AV1_MAX_NUM_CB_POINTS] point_cb_scaling;
+    char                      num_cr_points;
+    char[STD_VIDEO_AV1_MAX_NUM_CR_POINTS] point_cr_value;
+    char[STD_VIDEO_AV1_MAX_NUM_CR_POINTS] point_cr_scaling;
+    ichar[STD_VIDEO_AV1_MAX_NUM_POS_LUMA] ar_coeffs_y_plus_128;
+    ichar[STD_VIDEO_AV1_MAX_NUM_POS_CHROMA] ar_coeffs_cb_plus_128;
+    ichar[STD_VIDEO_AV1_MAX_NUM_POS_CHROMA] ar_coeffs_cr_plus_128;
+    char                      cb_mult;
+    char                      cb_luma_mult;
+    ushort                     cb_offset;
+    char                      cr_mult;
+    char                      cr_luma_mult;
+    ushort                     cr_offset;
+}
+bitstruct StdVideoAV1SequenceHeaderFlags : uint
+{
+    uint    still_picture  : 0..1;
+    uint    reduced_still_picture_header  : 1..2;
+    uint    use_128X128_superblock  : 2..3;
+    uint    enable_filter_intra  : 3..4;
+    uint    enable_intra_edge_filter  : 4..5;
+    uint    enable_interintra_compound  : 5..6;
+    uint    enable_masked_compound  : 6..7;
+    uint    enable_warped_motion  : 7..8;
+    uint    enable_dual_filter  : 8..9;
+    uint    enable_order_hint  : 9..10;
+    uint    enable_jnt_comp  : 10..11;
+    uint    enable_ref_frame_mvs  : 11..12;
+    uint    frame_id_numbers_present_flag  : 12..13;
+    uint    enable_superres  : 13..14;
+    uint    enable_cdef  : 14..15;
+    uint    enable_restoration  : 15..16;
+    uint    film_grain_params_present  : 16..17;
+    uint    timing_info_present_flag  : 17..18;
+    uint    initial_display_delay_present_flag  : 18..19;
+    uint    reserved  : 19..32;
+}
+struct StdVideoAV1SequenceHeader
+{
+    StdVideoAV1SequenceHeaderFlags    flags;
+    StdVideoAV1Profile                seq_profile;
+    char                           frame_width_bits_minus_1;
+    char                           frame_height_bits_minus_1;
+    ushort                          max_frame_width_minus_1;
+    ushort                          max_frame_height_minus_1;
+    char                           delta_frame_id_length_minus_2;
+    char                           additional_frame_id_length_minus_1;
+    char                           order_hint_bits_minus_1;
+    char                           seq_force_integer_mv;
+    char                           seq_force_screen_content_tools;
+    char[5] reserved1;
+    StdVideoAV1ColorConfig*     pColorConfig;
+    StdVideoAV1TimingInfo*      pTimingInfo;
+}
+bitstruct StdVideoDecodeAV1PictureInfoFlags : uint
+{
+    uint    error_resilient_mode  : 0..1;
+    uint    disable_cdf_update  : 1..2;
+    uint    use_superres  : 2..3;
+    uint    render_and_frame_size_different  : 3..4;
+    uint    allow_screen_content_tools  : 4..5;
+    uint    is_filter_switchable  : 5..6;
+    uint    force_integer_mv  : 6..7;
+    uint    frame_size_override_flag  : 7..8;
+    uint    buffer_removal_time_present_flag  : 8..9;
+    uint    allow_intrabc  : 9..10;
+    uint    frame_refs_short_signaling  : 10..11;
+    uint    allow_high_precision_mv  : 11..12;
+    uint    is_motion_mode_switchable  : 12..13;
+    uint    use_ref_frame_mvs  : 13..14;
+    uint    disable_frame_end_update_cdf  : 14..15;
+    uint    allow_warped_motion  : 15..16;
+    uint    reduced_tx_set  : 16..17;
+    uint    reference_select  : 17..18;
+    uint    skip_mode_present  : 18..19;
+    uint    delta_q_present  : 19..20;
+    uint    delta_lf_present  : 20..21;
+    uint    delta_lf_multi  : 21..22;
+    uint    segmentation_enabled  : 22..23;
+    uint    segmentation_update_map  : 23..24;
+    uint    segmentation_temporal_update  : 24..25;
+    uint    segmentation_update_data  : 25..26;
+    uint    UsesLr  : 26..27;
+    uint    usesChromaLr  : 27..28;
+    uint    apply_grain  : 28..29;
+    uint    reserved  : 29..32;
+}
+struct StdVideoDecodeAV1PictureInfo
+{
+    StdVideoDecodeAV1PictureInfoFlags    flags;
+    StdVideoAV1FrameType                 frame_type;
+    uint                             current_frame_id;
+    char                              OrderHint;
+    char                              primary_ref_frame;
+    char                              refresh_frame_flags;
+    char                              reserved1;
+    StdVideoAV1InterpolationFilter       interpolation_filter;
+    StdVideoAV1TxMode                    TxMode;
+    char                              delta_q_res;
+    char                              delta_lf_res;
+    char[STD_VIDEO_AV1_SKIP_MODE_FRAMES] SkipModeFrame;
+    char                              coded_denom;
+    char[3] reserved2;
+    char[STD_VIDEO_AV1_NUM_REF_FRAMES] OrderHints;
+    uint[STD_VIDEO_AV1_NUM_REF_FRAMES] expectedFrameId;
+    StdVideoAV1TileInfo*           pTileInfo;
+    StdVideoAV1Quantization*       pQuantization;
+    StdVideoAV1Segmentation*       pSegmentation;
+    StdVideoAV1LoopFilter*         pLoopFilter;
+    StdVideoAV1CDEF*               pCDEF;
+    StdVideoAV1LoopRestoration*    pLoopRestoration;
+    StdVideoAV1GlobalMotion*       pGlobalMotion;
+    StdVideoAV1FilmGrain*          pFilmGrain;
+}
+bitstruct StdVideoDecodeAV1ReferenceInfoFlags : uint
+{
+    uint    disable_frame_end_update_cdf  : 0..1;
+    uint    segmentation_enabled  : 1..2;
+    uint    reserved  : 2..32;
+}
+struct StdVideoDecodeAV1ReferenceInfo
+{
+    StdVideoDecodeAV1ReferenceInfoFlags    flags;
+    char                                frame_type;
+    char                                RefFrameSignBias;
+    char                                OrderHint;
+    char[STD_VIDEO_AV1_NUM_REF_FRAMES] SavedOrderHints;
+}
